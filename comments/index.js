@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const {randomBytes} = require('crypto')
 const cors = require('cors')
+const axios = require('axios')
 
 
 const app = express()
@@ -21,14 +22,33 @@ app.get('/posts/:id/comments', (req, res) => {
     res.status(200).send(commentsByPostId[id] || [])
 })
 
-app.post('/posts/:id/comments', (req, res) => {
-    const commentId = randomBytes(4).toString('hex')
-    const {content} = req.body
-    const postId = req.params.id
-    const comment = {id: commentId, content}
-    commentsByPostId[postId] ? commentsByPostId[postId].push(comment) : commentsByPostId[postId] = [comment]
+app.post('/posts/:id/comments', async (req, res) => {
+    try {
+        const commentId = randomBytes(4).toString('hex')
+        const {content} = req.body
+        const postId = req.params.id
+        const comment = {id: commentId, content}
+        commentsByPostId[postId] ? commentsByPostId[postId].push(comment) : commentsByPostId[postId] = [comment]
+    
+        await axios.post('http://localhost:4005/events', {
+            type: 'CommentCreated',
+            data: {
+                id: commentId,
+                content,
+                postId
+            }
+        })
+        res.status(201).send(commentsByPostId[postId])        
+    } catch (error) {
+        console.error(error)
+    }
+})
 
-    res.status(201).send(commentsByPostId[postId])
+app.post('/events', (req, res) => {
+    const event = req.body
+    console.log(`Event received: ${event.type}`)
+
+    res.send({})
 })
 
 app.listen(4001, () => {
