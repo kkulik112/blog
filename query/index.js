@@ -21,7 +21,7 @@ app.post('/events', (req, res) => {
             res.status(200).send(posts[data.id])
             break
         case 'CommentCreated':
-            posts[data.postId].comments.push({id: data.id, content: data.content})        
+            posts[data.postId].comments.push({id: data.id, content: data.content, status: data.status})        
             console.log(`Event received: CommentCreated`)
             res.status(200).send(posts[data.postId]['comments'])
             break
