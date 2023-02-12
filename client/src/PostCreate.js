@@ -4,25 +4,17 @@ import axios from 'axios'
 
 const PostCreate = () => {
 
-    const mainAxios = axios.create({
-        baseURL: 'localhost:4000/'
-    })
-
     const [title, setTitle] = useState('')
 
     const onSubmit = async (e) => {
         e.preventDefault()
         try {
-
             const payload = {title}
-
-            await mainAxios.post('http://localhost:4000/posts', payload)
-
+            await axios.post('http://localhost:4000/posts', payload)
             setTitle('')
         } catch (error) {
             console.error('error')
         }
-
     }
 
     return (
