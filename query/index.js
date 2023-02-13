@@ -13,21 +13,33 @@ app.get('/posts', (req, res) => {
 })
 
 app.post('/events', (req, res) => {
-    const {type, data} = req.body
-    switch(type){
-        case 'PostCreated':
-            posts[data.id] = {id: data.id, title: data.title, comments: []}
-            console.log(`Event received: PostCreated`)
-            res.status(200).send(posts[data.id])
-            break
-        case 'CommentCreated':
-            posts[data.postId].comments.push({id: data.id, content: data.content, status: data.status})        
-            console.log(`Event received: CommentCreated`)
-            res.status(200).send(posts[data.postId]['comments'])
-            break
-        default:
-            console.log("Event received: Unknown")
+    const {type, data} = req.body    
+    if(type === 'PostCreated'){
+        const {id, title,} = data
+        posts[id] = {id, title, comments: []}
+        console.log(`Event received: PostCreated`)
+        res.send(posts[id])
     }
+
+    if(type === 'CommentCreated'){
+        const {id, postId, content, status} = data
+        posts[postId].comments.push({id, content, status})        
+        console.log(`Event received: CommentCreated`)
+        res.send(posts[postId]['comments'])
+
+    }
+
+    if(type === 'CommentUpdated'){
+        const {id, postId, content, status} = data
+        const post = posts[postId]        
+        const comment = post.comments.find(comment => comment.id === id)
+        comment.status = status
+        comment.content = content
+        console.log(`Event received: CommentUpdated`)
+        res.send(posts[postId]['comments'])
+    }
+                            
+    
 })
 
 app.listen(4002, () => {
