@@ -47,7 +47,8 @@ app.post('/events', (req, res) => {
 })
 
 app.listen(4000, () => {
-    console.log('server running on port 4000')
+    console.log('Test log')
+    console.log('Server running on port 4000')
 })
 
 module.exports = app
