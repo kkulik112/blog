@@ -47,7 +47,7 @@ app.post('/events', (req, res) => {
 })
 
 app.listen(4000, () => {
-    console.log('Test log')
+    console.log('Skaffold test log')
     console.log('Server running on port 4000')
 })
 
