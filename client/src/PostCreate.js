@@ -10,7 +10,7 @@ const PostCreate = () => {
         e.preventDefault()
         try {
             const payload = {title}
-            await axios.post('http://posts.com/posts', payload)
+            await axios.post('http://posts.com/posts/create', payload)
             setTitle('')
         } catch (error) {
             console.error('error')
